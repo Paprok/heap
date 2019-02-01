@@ -1,13 +1,11 @@
 package com.codecool.krk;
 
-/**
- * Hello world!
- *
- */
-public class App 
+
+import com.codecool.krk.heap.Heap;
+
+public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
     }
 }
