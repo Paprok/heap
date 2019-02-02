@@ -31,7 +31,7 @@ public class Heap {
     }
 
     private void traverseUp(int index) {
-        while (isWrongPositionUp(index)) {
+        while (isBiggerThanParent(index)) {
             int parent = parent(index);
             switchNodes(index, parent);
             index = parent;
@@ -42,7 +42,7 @@ public class Heap {
         return (index - 1) / 2;
     }
 
-    private boolean isWrongPositionUp(int index) {
+    private boolean isBiggerThanParent(int index) {
         int parentIdx = parent(index);
         return index > 0 && heap[index] > heap[parentIdx];
     }
@@ -60,20 +60,39 @@ public class Heap {
     }
 
     private int pop() {
-        int popped = heap[0];
-        heap[0] = heap[--end];
-        return popped;
+        if(end > 0) {
+            int popped = heap[0];
+            heap[0] = heap[--end];
+            return popped;
+        } else {
+            throw new HeapUnderflow();
+        }
     }
 
     private void traverseDown() {
         int index = 0;
-        boolean isWrongPosition = true;
-        while (isWrongPosition) {
-            int leftChild = leftChild(index);
-            int rightChild = rightChild(index);
-            if(leftChild>rightChild){
-                // TODO
-            }
+        int biggerChildIdx = biggerChildIdx(index);
+        while (isLessThanChild(index, biggerChildIdx)) {
+            switchNodes(biggerChildIdx, index);
+            index = biggerChildIdx;
+            biggerChildIdx = biggerChildIdx(index);
+        }
+    }
+
+    private boolean isLessThanChild(int index, int childIdx) {
+    // TODO: Should i merge it with Up and make code look shitty and have more comparisons?
+            return childIdx < end && heap[index] < heap[childIdx];
+}
+
+    private int biggerChildIdx(int index){
+        int leftChildIdx = leftChild(index);
+        int rightChildIdx = rightChild(index);
+        if(isLessThanChild(rightChildIdx, leftChildIdx)) {
+            return leftChildIdx;
+        } else if (isLessThanChild(leftChildIdx, rightChildIdx)) {
+            return rightChildIdx;
+        } else {
+            return end;
         }
     }
 
@@ -86,6 +105,10 @@ public class Heap {
     }
 
     public int[] getHeap() {
-        return heap;
+        int[] actualHeap = new int[end];
+        for(int i = 0; i<end; i++){
+            actualHeap[i] = heap[i];
+        }
+        return actualHeap;
     }
 }
